@@ -101,4 +101,15 @@ public class QuestionRepositoryTests {
         assertThat(q1.getSubject()).isEqualTo("sbb가 무엇인가요? - 수정");
 
     }
+
+    @Test
+    @DisplayName("질문 삭제")
+    void t5() {
+        Question q1 = questionRepository.findById(1).get();
+        questionRepository.delete(q1);
+
+        assertThat(questionRepository.count()).isEqualTo(1);
+    }
+
+
 }
