@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.ActiveProfiles;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
@@ -111,5 +112,28 @@ public class QuestionRepositoryTests {
         assertThat(questionRepository.count()).isEqualTo(1);
     }
 
+    @Test
+    @DisplayName("답글 저장")
+    @Transactional
+    void t6() {
+        Question q1 = questionRepository.findById(2).get();
 
+        Answer a1 = new Answer();
+        a1.setContent("답글 1");
+
+//        q1.getAnswerList().add(a1); // q1의 답글 목록에 a1 추가
+//        questionRepository.save(q1);
+
+        /** DB에 저장을 하고자 한다면, 외래키를 가지고 있는 클래스에 저장해야함 */
+
+        a1.setQuestion(q1); // a1이 q1을 참조하도록 설정
+        answerRepository.save(a1);
+        answerRepository.flush();
+
+        Answer foundedAnswer = answerRepository.findById(1).get();
+
+        assertThat(foundedAnswer.getId()).isEqualTo(1);
+        assertThat(foundedAnswer.getContent()).isEqualTo("답글 1");
+
+    }
 }
