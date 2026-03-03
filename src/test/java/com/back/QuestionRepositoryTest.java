@@ -155,4 +155,23 @@ public class QuestionRepositoryTest {
         Question q1 = questionRepository.findById(1).get();
         questionRepository.delete(q1);
     }
+
+    @Test
+    @Transactional
+    void t8() {
+        Question q1 = questionRepository.findById(1).get(); // t8에 @Transactional을 안 붙이면 여기서 트랜잭션 종료
+
+        // 질문 목록
+        // 기본값 FetchType.LAZY -> 댓글을 최대한 나중에(필요한 순간에) 가져온다.
+        // FetchType.EAGER -> 질문과 답글을 한 번에 가져온다.
+        System.out.println(q1.getSubject()); // 댓글 가져오지 않는다.
+
+        // 질문 상세 내용 + 답글 목록
+        System.out.println(q1.getContent()); // 댓글 가져오지 않는다
+        q1.getAnswerList() // 댓글 가져온다.
+                .stream()
+                .forEach(a -> System.out.println(a.getContent()));
+
+    }// t8에 @Transactional을 붙이면 여기서 트랜잭션 종료
+
 }

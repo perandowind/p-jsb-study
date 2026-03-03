@@ -24,7 +24,8 @@ public class Question {
      * mappedBy를 적은쪽은 외래키가 안생김, One쪽에 mappedBy를 적어줘야함.
      * REMOVE는 부모(Question)삭제할 때 자식(Answer)도 함께 삭제되도록 해줌
      */
-    @OneToMany(mappedBy = "question", cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
+    @OneToMany(mappedBy = "question", fetch = FetchType.LAZY,
+            cascade = {CascadeType.PERSIST, CascadeType.REMOVE})
     private List<Answer> answerList = new ArrayList<>();
 
     void addAnswer(String content) {
