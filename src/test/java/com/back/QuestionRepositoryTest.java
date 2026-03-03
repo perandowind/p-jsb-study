@@ -14,7 +14,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
 @ActiveProfiles("test")
-public class QuestionRepositoryTests {
+public class QuestionRepositoryTest {
 
     @Autowired
     private QuestionRepository questionRepository;
@@ -22,40 +22,46 @@ public class QuestionRepositoryTests {
     @Autowired
     private AnswerRepository answerRepository;
 
-    /*@Test
-    void t1() {
-        Question q1 = new Question();
-        q1.setSubject("sbb가 무엇인가요?");
-        q1.setContent("sbb에 대해서 알고 싶습니다");
-        questionRepository.save(q1);
+    //    @Test
+//    void tt() {
 
-        Answer a1 = new Answer();
-        a1.setContent("sbb는 스프링부트 게시판입니다.1");
-        a1.setQuestion(q1);
-        answerRepository.save(a1);
+    // v1
+//        Question q1 = new Question();
+//        q1.setSubject("sbb가 무엇인가요?");
+//        q1.setContent("sbb에 대해서 알고 싶습니다.");
+//        questionRepository.save(q1);
+//
+//        Answer a1 = new Answer();
+//        a1.setContent("sbb는 스프링부트 게시판입니다.1");
+//        a1.setQuestion(q1);
+//        answerRepository.save(a1);
+//
+//        Answer a2 = new Answer();
+//        a2.setContent("sbb는 스프링부트 게시판입니다.2");
+//        a2.setQuestion(q1);
+//        answerRepository.save(a2);
 
-        Answer a2 = new Answer();
-        a1.setContent("sbb는 스프링부트 게시판입니다.2");
-        a1.setQuestion(q1);
-        answerRepository.save(a2);
-    }*/
+    // v2
 
+//        Question q1 = new Question();
+//        q1.setSubject("sbb가 무엇인가요?");
+//        q1.setContent("sbb에 대해서 알고 싶습니다.");
+//
+//        Answer a1 = new Answer();
+//        a1.setContent("sbb는 스프링부트 게시판입니다.1");
+//
+//        Answer a2 = new Answer();
+//        a1.setContent("sbb는 스프링부트 게시판입니다.2");
+//
+//        q1.getAnswerList().add(a1); // 부모에 자식을 연결
+//        a1.setQuestion(q1); // 자식에 부모를 연결
+//
+//        q1.getAnswerList().add(a2); // 부모에 자식을 연결
+//        a2.setQuestion(q1); // 자식에 부모를 연결
+//
+//        questionRepository.save(q1);
 
-
-    /*@Test
-    @Transactional
-    void t2() {
-        Question q1 = questionRepository.findById(1).get();
-        System.out.println(q1.getSubject());
-        System.out.println(q1.getContent());
-
-        // q1 질문에 대한 답글
-        List<Answer> answers = q1.getAnswerList();
-        for (Answer a : answers) {
-            System.out.println(a.getContent());
-        }
-        //answerRepository.findById() // select * from answer where question_id = 1;
-    }*/
+    //    }
 
     @Test
     void t1() {
@@ -116,24 +122,37 @@ public class QuestionRepositoryTests {
     @DisplayName("답글 저장")
     @Transactional
     void t6() {
-        Question q1 = questionRepository.findById(2).get();
+//        Question q1 = questionRepository.findById(2).get();
+        Question q1 = questionRepository.findById(1).get();
+        q1.addAnswer("답글 1");
 
-        Answer a1 = new Answer();
-        a1.setContent("답글 1");
+        questionRepository.flush();
 
 //        q1.getAnswerList().add(a1); // q1의 답글 목록에 a1 추가
 //        questionRepository.save(q1);
 
         /** DB에 저장을 하고자 한다면, 외래키를 가지고 있는 클래스에 저장해야함 */
+//        a1.setQuestion(q1); // a1이 q1을 참조하도록 설정
+//        answerRepository.save(a1);
+//        answerRepository.flush(); // 캐시를 비운다.(실제로는 JPA가 캐시 값을 사용하기 때문에 캐시를 비워서 JPA가 DB를 갔다오라도록 함.)
 
-        a1.setQuestion(q1); // a1이 q1을 참조하도록 설정
-        answerRepository.save(a1);
-        answerRepository.flush();
 
         Answer foundedAnswer = answerRepository.findById(1).get();
 
         assertThat(foundedAnswer.getId()).isEqualTo(1);
         assertThat(foundedAnswer.getContent()).isEqualTo("답글 1");
 
+    }
+
+    @Test
+    @DisplayName("질문 삭제 with 답글")
+    void t7() {
+        //        Answer a1 = answerRepository.findById(1).get();
+//        answerRepository.delete(a1);
+//        Answer a2 = answerRepository.findById(2).get();
+//        answerRepository.delete(a2);
+
+        Question q1 = questionRepository.findById(1).get();
+        questionRepository.delete(q1);
     }
 }
